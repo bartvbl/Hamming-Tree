@@ -4,9 +4,8 @@
 #include <utility>
 #include <list>
 #include <unordered_map>
-#include <shapeDescriptor/cpu/types/QuiccImage.h>
-#include <shapeDescriptor/utilities/Cache.h>
-#include <shapeDescriptor/cpu/index/types/IndexPath.h>
+#include <hammingTree/utilities/Cache.h>
+#include <hammingTree/cpu/index/types/IndexPath.h>
 #include <set>
 #include "IndexIO.h"
 
@@ -76,7 +75,7 @@ public:
                 insertItem(rootNodeID, new NodeBlock(), true);
             }
         }
-    void insertImage(const QuiccImage &image, const IndexEntry reference);
+    void insertImage(const ShapeDescriptor::QUICCIDescriptor &image, const IndexEntry reference);
     const NodeBlock* getNodeBlockByID(std::string blockID);
     size_t getCurrentImageCount() const;
 };

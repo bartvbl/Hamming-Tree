@@ -1,15 +1,14 @@
 #include <arrrgh.hpp>
-#include <shapeDescriptor/cpu/index/types/Index.h>
-#include <shapeDescriptor/cpu/index/IndexIO.h>
-#include <shapeDescriptor/cpu/index/IndexQueryer.h>
+#include <hammingTree/cpu/index/types/Index.h>
+#include <hammingTree/cpu/index/IndexIO.h>
+#include <hammingTree/cpu/index/IndexQueryer.h>
 #include <lodepng.h>
-#include <shapeDescriptor/cpu/types/QUICCIImages.h>
 #include <shapeDescriptor/utilities/dumpers/descriptors.h>
 #include <shapeDescriptor/utilities/fileutils.h>
 #include <random>
-#include <shapeDescriptor/utilities/readers/quicciReader.h>
-#include <shapeDescriptor/cpu/index/types/BitCountMipmapStack.h>
-#include <shapeDescriptor/cpu/index/SequentialIndexQueryer.h>
+#include <hammingTree/utilities/readers/quicciReader.h>
+#include <hammingTree/cpu/index/types/BitCountMipmapStack.h>
+#include <hammingTree/cpu/index/SequentialIndexQueryer.h>
 #include <json.hpp>
 #include <tsl/ordered_map.h>
 #include <fstream>
@@ -76,12 +75,12 @@ int main(int argc, const char** argv) {
     std::experimental::filesystem::path chosenQueryFilePath = queryFiles.at(chosenFileIndex);
     std::cout << "\tChose " << chosenQueryFilePath << " as file to select an image from." << std::endl;
 
-    SpinImage::cpu::QUICCIImages queryImages = SpinImage::read::QUICCImagesFromDumpFile(chosenQueryFilePath);
-    std::uniform_int_distribution<size_t> queryImageDistribution(0, queryImages.imageCount);
+    ShapeDescriptor::cpu::array<ShapeDescriptor::QUICCIDescriptor> queryImages = SpinImage::read::QUICCImagesFromDumpFile(chosenQueryFilePath);
+    std::uniform_int_distribution<size_t> queryImageDistribution(0, queryImages.length);
     size_t chosenQueryImageIndex = queryImageDistribution(generator);
-    QuiccImage chosenQueryImage = queryImages.images[chosenQueryImageIndex];
+    ShapeDescriptor::QUICCIDescriptor chosenQueryImage = queryImages.content[chosenQueryImageIndex];
     BitCountMipmapStack(chosenQueryImage).print();
-    std::cout << "\tChose image " << chosenQueryImageIndex << "/" << queryImages.imageCount << " from selected image file." << std::endl;
+    std::cout << "\tChose image " << chosenQueryImageIndex << "/" << queryImages.length << " from selected image file." << std::endl;
 
     std::cout << "Reading index metadata.." << std::endl;
     Index index = SpinImage::index::io::readIndex(indexDirectory.value());

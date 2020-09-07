@@ -1,9 +1,7 @@
-#include <spinImage/utilities/fileutils.h>
+#include <shapeDescriptor/utilities/fileutils.h>
 #include <iostream>
-#include <spinImage/cpu/types/QUICCIImages.h>
-#include <spinImage/utilities/readers/quicciReader.h>
+#include <hammingTree/utilities/readers/quicciReader.h>
 #include <bitset>
-#include <spinImage/cpu/types/QuiccImage.h>
 #include <json.hpp>
 #include <fstream>
 #include "IndexBuilder.h"

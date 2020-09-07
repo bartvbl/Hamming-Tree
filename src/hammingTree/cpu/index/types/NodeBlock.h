@@ -1,8 +1,8 @@
 #pragma once
 
 #include <array>
-#include <shapeDescriptor/cpu/types/BoolArray.h>
-#include <shapeDescriptor/cpu/index/types/IndexEntry.h>
+#include <hammingTree/cpu/types/BoolArray.h>
+#include <hammingTree/cpu/index/types/IndexEntry.h>
 #include <mutex>
 #include "NodeBlockEntry.h"
 

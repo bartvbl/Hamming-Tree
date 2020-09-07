@@ -1,12 +1,12 @@
 #pragma once
 
+#include <shapeDescriptor/common/types/methods/QUICCIDescriptor.h>
 #include "IndexEntry.h"
-#include <shapeDescriptor/cpu/types/QuiccImage.h>
 
 struct NodeBlockEntry {
     IndexEntry indexEntry;
-    QuiccImage image;
+    ShapeDescriptor::QUICCIDescriptor image;
 
-    NodeBlockEntry(const IndexEntry entry, QuiccImage image) : indexEntry(entry), image(image) {}
+    NodeBlockEntry(const IndexEntry entry, ShapeDescriptor::QUICCIDescriptor image) : indexEntry(entry), image(image) {}
     NodeBlockEntry() {}
 };

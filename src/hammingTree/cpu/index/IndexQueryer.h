@@ -1,8 +1,7 @@
 #pragma once
 
-#include <shapeDescriptor/cpu/index/types/Index.h>
-#include <shapeDescriptor/cpu/index/types/IndexEntry.h>
-#include <shapeDescriptor/cpu/types/QuiccImage.h>
+#include <hammingTree/cpu/index/types/Index.h>
+#include <hammingTree/cpu/index/types/IndexEntry.h>
 #include <shapeDescriptor/common/types/methods/QUICCIDescriptor.h>
 
 namespace SpinImage {
@@ -33,7 +32,7 @@ namespace SpinImage {
             };
         }
 
-        std::vector<QueryResult> query(Index &index, const QuiccImage &queryImage,
+        std::vector<QueryResult> query(Index &index, const ShapeDescriptor::QUICCIDescriptor &queryImage,
                 unsigned int resultCountLimit, debug::QueryRunInfo* runInfo = nullptr);
     }
 }

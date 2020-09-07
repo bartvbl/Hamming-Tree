@@ -1,10 +1,9 @@
 #pragma once
 
-#include <shapeDescriptor/treeBuildSettings.h>
+#include <hammingTree/treeBuildSettings.h>
 #include <iostream>
 #include <array>
 #include <bitset>
-#include <shapeDescriptor/cpu/types/QuiccImage.h>
 
 static_assert(spinImageWidthPixels <= 512, "The bit count mipmap stack stores its values as unsigned short, which is able to represent bit counts for images up to 512x512 in size. If you go over this value, make sure to swap out unsigned shorts for unsigned ints.");
 
@@ -32,7 +31,7 @@ struct BitCountMipmapStack {
         return image;
     }
 
-    std::array<unsigned short, 32*32> computeLevel6(const QuiccImage &quiccImage) {
+    std::array<unsigned short, 32*32> computeLevel6(const ShapeDescriptor::QUICCIDescriptor &quiccImage) {
         std::array<unsigned short, 32*32> image;
 
         for(int mipmapRow = 0; mipmapRow < 32; mipmapRow++) {
@@ -43,8 +42,8 @@ struct BitCountMipmapStack {
                 unsigned int quiccImageCol = mipmapCol / 16;
                 unsigned int topIndex = quiccImageRow * uintsPerRow + quiccImageCol;
                 unsigned int bottomIndex = (quiccImageRow + 1) * uintsPerRow + quiccImageCol;
-                unsigned int top = quiccImage[topIndex];
-                unsigned int bottom = quiccImage[bottomIndex];
+                unsigned int top = quiccImage.contents[topIndex];
+                unsigned int bottom = quiccImage.contents[bottomIndex];
 
                 unsigned int relativeCol = (2 * mipmapCol) % 32;
 
@@ -76,7 +75,7 @@ struct BitCountMipmapStack {
         return image;
     }
 
-    explicit BitCountMipmapStack(const QuiccImage &quiccImage)
+    explicit BitCountMipmapStack(const ShapeDescriptor::QUICCIDescriptor &quiccImage)
         : level6(computeLevel6(quiccImage)),
           level5(computeLevel<32>(level6)),
           level4(computeLevel<16>(level5)),

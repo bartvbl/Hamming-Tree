@@ -1,8 +1,7 @@
 #include <arrrgh.hpp>
-#include <shapeDescriptor/cpu/index/types/Index.h>
-#include <shapeDescriptor/cpu/index/IndexIO.h>
-#include <shapeDescriptor/cpu/index/IndexQueryer.h>
-#include <lodepng.h>
+#include <hammingTree/cpu/index/types/Index.h>
+#include <hammingTree/cpu/index/IndexIO.h>
+#include <hammingTree/cpu/index/IndexQueryer.h>
 #include <fstream>
 #include <shapeDescriptor/utilities/fileutils.h>
 

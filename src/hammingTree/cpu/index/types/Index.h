@@ -4,9 +4,10 @@
 #include <string>
 #include <vector>
 #include <map>
-#include <shapeDescriptor/treeBuildSettings.h>
+#include <hammingTree/treeBuildSettings.h>
 #include "NodeBlock.h"
 #include <experimental/filesystem>
+#include <shapeDescriptor/libraryBuildSettings.h>
 
 // Whole index section is built around images of size 64x64!
 static_assert(spinImageWidthPixels == 64, "The Index part of the library assumes images are 64x64. Support for alternate image sizes must be added explicitly!");

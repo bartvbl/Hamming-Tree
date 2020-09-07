@@ -1,11 +1,10 @@
 #include <arrrgh.hpp>
-#include <shapeDescriptor/cpu/index/types/Index.h>
-#include <shapeDescriptor/cpu/index/IndexIO.h>
-#include <shapeDescriptor/cpu/index/IndexQueryer.h>
+#include <hammingTree/cpu/index/types/Index.h>
+#include <hammingTree/cpu/index/IndexIO.h>
+#include <hammingTree/cpu/index/IndexQueryer.h>
 #include <lodepng.h>
-#include <shapeDescriptor/cpu/types/QUICCIImages.h>
 #include <shapeDescriptor/utilities/dumpers/descriptors.h>
-#include <shapeDescriptor/cpu/index/types/BitCountMipmapStack.h>
+#include <hammingTree/cpu/index/types/BitCountMipmapStack.h>
 
 int main(int argc, const char** argv) {
     arrrgh::parser parser("queryindex", "Query an existing index of QUICCI images.");
@@ -48,7 +47,7 @@ int main(int argc, const char** argv) {
 
     assert(width == spinImageWidthPixels && height == spinImageWidthPixels);
 
-    QuiccImage queryQUIICIMage;
+    ShapeDescriptor::QUICCIDescriptor queryQUIICIMage;
 
     for(unsigned int row = 0; row < spinImageWidthPixels; row++) {
         unsigned int chunk = 0;
@@ -57,7 +56,7 @@ int main(int argc, const char** argv) {
             unsigned int bit = imageData.at(colourChannelsPerPixel * ((spinImageWidthPixels - 1 - row) * spinImageWidthPixels + col)) != 0 ? 1 : 0;
             chunk = chunk | (bit << (31U - col%32));
             if(col % 32 == 31) {
-                queryQUIICIMage[row * (spinImageWidthPixels / 32) + (col / 32)] = chunk;
+                queryQUIICIMage.contents[row * (spinImageWidthPixels / 32) + (col / 32)] = chunk;
                 chunk = 0;
             }
         }

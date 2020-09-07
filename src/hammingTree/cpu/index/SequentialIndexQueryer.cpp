@@ -1,17 +1,17 @@
 #include <omp.h>
-#include <spinImage/utilities/fileutils.h>
-#include <spinImage/cpu/types/QUICCIImages.h>
-#include <spinImage/utilities/readers/quicciReader.h>
+#include <shapeDescriptor/utilities/fileutils.h>
+#include <hammingTree/utilities/readers/quicciReader.h>
 #include <bitset>
 #include <set>
 #include <mutex>
 #include <iostream>
 #include <malloc.h>
+#include <shapeDescriptor/cpu/types/array.h>
 #include "SequentialIndexQueryer.h"
 
-std::pair<float, float> computedWeightedHammingWeights(const QuiccImage &needle) {
+std::pair<float, float> computedWeightedHammingWeights(const ShapeDescriptor::QUICCIDescriptor &needle) {
     unsigned int queryImageSetBitCount = 0;
-    for(unsigned int chunk : needle) {
+    for(unsigned int chunk : needle.contents) {
         queryImageSetBitCount += std::bitset<32>(chunk).count();
     }
 
@@ -29,35 +29,35 @@ std::pair<float, float> computedWeightedHammingWeights(const QuiccImage &needle)
     return {missedSetBitPenalty, missedUnsetBitPenalty};
 }
 
-float computeWeightedHammingDistance(const QuiccImage &needle, const QuiccImage &haystack, float missedSetBitPenalty, float missedUnsetBitPenalty) {
+float computeWeightedHammingDistance(const ShapeDescriptor::QUICCIDescriptor &needle, const ShapeDescriptor::QUICCIDescriptor &haystack, float missedSetBitPenalty, float missedUnsetBitPenalty) {
     // Wherever pixels don't match, we apply a penalty for each of them
     float score = 0;
-    for(int i = 0; i < needle.size(); i++) {
-        unsigned int wrongSetBitCount = std::bitset<32>((needle[i] ^ haystack[i]) & needle[i]).count();
-        unsigned int wrongUnsetBitCount = std::bitset<32>((~needle[i] ^ ~haystack[i]) & ~needle[i]).count();
+    for(int i = 0; i < ShapeDescriptor::QUICCIDescriptorLength; i++) {
+        unsigned int wrongSetBitCount = std::bitset<32>((needle.contents[i] ^ haystack.contents[i]) & needle.contents[i]).count();
+        unsigned int wrongUnsetBitCount = std::bitset<32>((~needle.contents[i] ^ ~haystack.contents[i]) & ~needle.contents[i]).count();
         score += float(wrongSetBitCount) * missedSetBitPenalty + float(wrongUnsetBitCount) * missedUnsetBitPenalty;
     }
 
     return score;
 }
 
-float computeHammingDistance(const QuiccImage &needle, const QuiccImage &haystack) {
+float computeHammingDistance(const ShapeDescriptor::QUICCIDescriptor &needle, const ShapeDescriptor::QUICCIDescriptor &haystack) {
     // Wherever pixels don't match, we apply a penalty for each of them
     float score = 0;
-    for(int i = 0; i < needle.size(); i++) {
-        score += std::bitset<32>(needle[i] ^ haystack[i]).count();
+    for(int i = 0; i < ShapeDescriptor::QUICCIDescriptorLength; i++) {
+        score += std::bitset<32>(needle.contents[i] ^ haystack.contents[i]).count();
     }
 
     return score;
 }
 
-std::vector<SpinImage::index::QueryResult> SpinImage::index::sequentialQuery(std::experimental::filesystem::path dumpDirectory, const QuiccImage &queryImage, unsigned int resultCount, unsigned int fileStartIndex, unsigned int fileEndIndex, unsigned int threadCount, debug::QueryRunInfo* runInfo) {
+std::vector<SpinImage::index::QueryResult> SpinImage::index::sequentialQuery(std::experimental::filesystem::path dumpDirectory, const ShapeDescriptor::QUICCIDescriptor &queryImage, unsigned int resultCount, unsigned int fileStartIndex, unsigned int fileEndIndex, unsigned int threadCount, debug::QueryRunInfo* runInfo) {
     std::pair<float, float> hammingWeights = computedWeightedHammingWeights(queryImage);
 
     std::chrono::steady_clock::time_point startTime = std::chrono::steady_clock::now();
 
     std::cout << "Listing files.." << std::endl;
-    std::vector<std::experimental::filesystem::path> filesToIndex = SpinImage::utilities::listDirectory(dumpDirectory);
+    std::vector<std::experimental::filesystem::path> filesToIndex = ShapeDescriptor::utilities::listDirectory(dumpDirectory);
     std::cout << "\tFound " << filesToIndex.size() << " files." << std::endl;
 
     omp_set_nested(1);
@@ -78,14 +78,14 @@ std::vector<SpinImage::index::QueryResult> SpinImage::index::sequentialQuery(std
 
         // Reading image dump file
         std::experimental::filesystem::path archivePath = filesToIndex.at(fileIndex);
-        SpinImage::cpu::QUICCIImages images = SpinImage::read::QUICCImagesFromDumpFile(archivePath);
+        ShapeDescriptor::cpu::array<ShapeDescriptor::QUICCIDescriptor> images = SpinImage::read::QUICCImagesFromDumpFile(archivePath);
 
         #pragma omp critical
         {
             // For each image, register pixels in dump file
             #pragma omp parallel for schedule(dynamic)
-            for (IndexImageID imageIndex = 0; imageIndex < images.imageCount; imageIndex++) {
-                QuiccImage combinedImage = images.images[imageIndex];
+            for (IndexImageID imageIndex = 0; imageIndex < images.length; imageIndex++) {
+                ShapeDescriptor::QUICCIDescriptor combinedImage = images.content[imageIndex];
                 float distanceScore = computeWeightedHammingDistance(queryImage, combinedImage, hammingWeights.first, hammingWeights.second);
                 //float distanceScore = computeHammingDistance(queryImage, combinedImage);
                 if(distanceScore < currentScoreThreshold || searchResults.size() < resultCount) {
@@ -102,7 +102,7 @@ std::vector<SpinImage::index::QueryResult> SpinImage::index::sequentialQuery(std
                 }
             }
 
-            delete images.images;
+            delete images.content;
 
             if(fileIndex % 1000 == 0) {
                 malloc_trim(0);

@@ -39,17 +39,18 @@ file (GLOB_RECURSE INDEX_BENCHMARK_TOOL_SOURCES tools/indexBenchmark/*.cpp)
 file (GLOB_RECURSE QUICCI_DUMPER_TOOL_SOURCES  tools/quiccidumper/*.cpp)
 file (GLOB_RECURSE COMPRESSOR_TOOL_SOURCES     tools/compressor/*.cpp)
 
+add_library(${PROJECT_NAME} STATIC ${LIBRARY_SOURCES} ${LIBRARY_HEADERS} ${LIBRARY_KERNELS})
+target_link_libraries(${PROJECT_NAME} stdc++fs fast-lzma2)
+target_include_directories(${PROJECT_NAME} PUBLIC src/)
+
 add_executable(buildindex ${INDEX_BUILD_TOOL_SOURCES})
-target_link_libraries(buildindex ShapeDescriptor cudadevrt)
+target_link_libraries(buildindex ShapeDescriptor HammingTree cudadevrt)
 
 add_executable(benchmarkindex ${INDEX_BENCHMARK_TOOL_SOURCES})
-target_link_libraries(benchmarkindex ShapeDescriptor cudadevrt)
+target_link_libraries(benchmarkindex ShapeDescriptor HammingTree cudadevrt)
 
 add_executable(queryindex ${INDEX_QUERY_TOOL_SOURCES})
-target_link_libraries(queryindex ShapeDescriptor cudadevrt)
+target_link_libraries(queryindex ShapeDescriptor HammingTree cudadevrt)
 
 add_executable(compressor ${COMPRESSOR_TOOL_SOURCES})
-target_link_libraries(compressor ShapeDescriptor cudadevrt)
-
-
-
+target_link_libraries(compressor ShapeDescriptor HammingTree cudadevrt)
