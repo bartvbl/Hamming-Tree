@@ -1,7 +1,7 @@
 #pragma once
 
-#include <hammingTree/cpu/index/types/Index.h>
-#include <hammingTree/cpu/index/types/IndexEntry.h>
+#include <hammingTree/index/types/Index.h>
+#include <hammingTree/index/types/IndexEntry.h>
 #include "IndexQueryer.h"
 
 namespace SpinImage {

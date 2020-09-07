@@ -1,7 +1,7 @@
 #pragma once
 
 #include <cstddef>
-#include <hammingTree/cpu/index/types/Index.h>
+#include <hammingTree/index/types/Index.h>
 
 struct IndexEntry {
     // To save space, we only store the index of the file where the entry originated from.

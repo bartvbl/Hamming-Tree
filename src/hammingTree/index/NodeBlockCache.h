@@ -5,7 +5,7 @@
 #include <list>
 #include <unordered_map>
 #include <hammingTree/utilities/Cache.h>
-#include <hammingTree/cpu/index/types/IndexPath.h>
+#include <hammingTree/index/types/IndexPath.h>
 #include <set>
 #include "IndexIO.h"
 

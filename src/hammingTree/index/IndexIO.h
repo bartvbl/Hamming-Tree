@@ -1,8 +1,8 @@
 #pragma once
 
-#include <hammingTree/cpu/index/types/Index.h>
+#include <hammingTree/index/types/Index.h>
 #include <string>
-#include <hammingTree/cpu/index/types/NodeBlock.h>
+#include <hammingTree/index/types/NodeBlock.h>
 
 namespace SpinImage {
     namespace index {

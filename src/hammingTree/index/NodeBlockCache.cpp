@@ -1,5 +1,5 @@
 #include <cassert>
-#include <hammingTree/cpu/index/types/BitCountMipmapStack.h>
+#include <hammingTree/index/types/BitCountMipmapStack.h>
 #include "NodeBlockCache.h"
 
 size_t countImages(std::array<std::vector<NodeBlockEntry>, NODES_PER_BLOCK> &entries) {

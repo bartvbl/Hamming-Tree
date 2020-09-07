@@ -1,7 +1,7 @@
 #pragma once
 
 #include <experimental/filesystem>
-#include <hammingTree/cpu/index/types/Index.h>
+#include <hammingTree/index/types/Index.h>
 #include "NodeBlockCache.h"
 
 namespace SpinImage {
