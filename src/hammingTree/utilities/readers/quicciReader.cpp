@@ -1,12 +1,14 @@
-#include <spinImage/libraryBuildSettings.h>
+#include <shapeDescriptor/libraryBuildSettings.h>
 #include "quicciReader.h"
 #include <exception>
 #include <iostream>
-#include <spinImage/utilities/fileutils.h>
+#include <shapeDescriptor/utilities/fileutils.h>
+#include <shapeDescriptor/common/types/methods/QUICCIDescriptor.h>
+#include <shapeDescriptor/cpu/types/array.h>
 
-SpinImage::cpu::QUICCIImages readImageLZFile(const std::experimental::filesystem::path &path) {
+ShapeDescriptor::cpu::array<ShapeDescriptor::QUICCIDescriptor> readImageLZFile(const std::experimental::filesystem::path &path) {
     size_t bufferSize;
-    const char* inputBuffer = SpinImage::utilities::readCompressedFile(path, &bufferSize, false);
+    const char* inputBuffer = ShapeDescriptor::utilities::readCompressedFile(path, &bufferSize, false);
 
     char header[5] = {inputBuffer[0], inputBuffer[1], inputBuffer[2], inputBuffer[3], '\0'};
     if(std::string(header) != "QUIC") {
@@ -24,20 +26,20 @@ SpinImage::cpu::QUICCIImages readImageLZFile(const std::experimental::filesystem
         throw std::runtime_error("Invalid input file detected!");
     }
 
-    SpinImage::cpu::QUICCIImages images;
-    images.imageCount = imageCount;
-    images.images = new QuiccImage[imageCount];
+    ShapeDescriptor::cpu::array<ShapeDescriptor::QUICCIDescriptor> images;
+    images.length = imageCount;
+    images.content = new ShapeDescriptor::QUICCIDescriptor[imageCount];
 
-    const QuiccImage* imagesBasePointer
-        = reinterpret_cast<const QuiccImage*>(inputBuffer + 4 + sizeof(size_t) + sizeof(unsigned int));
+    const ShapeDescriptor::QUICCIDescriptor* imagesBasePointer
+        = reinterpret_cast<const ShapeDescriptor::QUICCIDescriptor*>(inputBuffer + 4 + sizeof(size_t) + sizeof(unsigned int));
 
-    std::copy(imagesBasePointer, imagesBasePointer + imageCount, images.images);
+    std::copy(imagesBasePointer, imagesBasePointer + imageCount, images.content);
 
     delete[] inputBuffer;
     return images;
 }
 
-SpinImage::cpu::QUICCIImages SpinImage::read::QUICCImagesFromDumpFile(const std::experimental::filesystem::path &dumpFileLocation) {
+ShapeDescriptor::cpu::array<ShapeDescriptor::QUICCIDescriptor> SpinImage::read::QUICCImagesFromDumpFile(const std::experimental::filesystem::path &dumpFileLocation) {
     return readImageLZFile(dumpFileLocation);
 }
 
