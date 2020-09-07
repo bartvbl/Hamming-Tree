@@ -41,7 +41,6 @@ file (GLOB_RECURSE LIBRARY_SOURCES             src/*.cpp
         src/*.c
         lib/lodepng/lodepng.cpp)
 
-file (GLOB_RECURSE TEST_SOURCES                tests/*.cpp)
 file (GLOB_RECURSE RENDER_TOOL_SOURCES         tools/imagerenderer/*.cpp)
 file (GLOB_RECURSE INDEX_BUILD_TOOL_SOURCES    tools/indexbuilder/*.cpp)
 file (GLOB_RECURSE INDEX_QUERY_TOOL_SOURCES    tools/indexqueryer/*.cpp)
