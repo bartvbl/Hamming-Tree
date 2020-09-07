@@ -108,7 +108,7 @@ void NodeBlockCache::splitNode(
 }
 
 
-void NodeBlockCache::insertImage(const QuiccImage &image, const IndexEntry reference) {
+void NodeBlockCache::insertImage(const ShapeDescriptor::QUICCIDescriptor &image, const IndexEntry reference) {
     #pragma omp atomic
     nodeBlockStatistics.imageInsertionCount++;
     #pragma omp atomic

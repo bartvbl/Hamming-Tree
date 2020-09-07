@@ -3,14 +3,14 @@
 #include <limits>
 #include "modelScaler.h"
 
-SpinImage::cpu::Mesh SpinImage::utilities::fitMeshInsideSphereOfRadius(SpinImage::cpu::Mesh &input, float radius) {
+ShapeDescriptor::cpu::Mesh SpinImage::utilities::fitMeshInsideSphereOfRadius(ShapeDescriptor::cpu::Mesh &input, float radius) {
 	double averageX = 0;
 	double averageY = 0;
 	double averageZ = 0;
 
 	// I use a running average mean computing method here for better accuracy with large models
 	for(unsigned int i = 0; i < input.vertexCount; i++) {
-		SpinImage::cpu::float3 vertex = input.vertices[i];
+        ShapeDescriptor::cpu::float3 vertex = input.vertices[i];
 
 		averageX += (vertex.x - averageX) / float(i + 1);
 		averageY += (vertex.y - averageY) / float(i + 1);
@@ -20,7 +20,7 @@ SpinImage::cpu::Mesh SpinImage::utilities::fitMeshInsideSphereOfRadius(SpinImage
 	double maxDistance = -std::numeric_limits<double>::max();
 
 	for(unsigned int i = 0; i < input.vertexCount; i++) {
-		SpinImage::cpu::float3 vertex = input.vertices[i];
+        ShapeDescriptor::cpu::float3 vertex = input.vertices[i];
 
 		double deltaX = vertex.x - averageX;
 		double deltaY = vertex.y - averageY;
@@ -31,7 +31,7 @@ SpinImage::cpu::Mesh SpinImage::utilities::fitMeshInsideSphereOfRadius(SpinImage
 	}
 
 
-	SpinImage::cpu::Mesh scaledMesh(input.vertexCount, input.indexCount);
+    ShapeDescriptor::cpu::Mesh scaledMesh(input.vertexCount, input.indexCount);
 
     std::copy(input.normals, input.normals + scaledMesh.vertexCount, scaledMesh.normals);
     std::copy(input.indices, input.indices + scaledMesh.indexCount, scaledMesh.indices);

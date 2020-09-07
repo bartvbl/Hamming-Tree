@@ -202,7 +202,7 @@ Index SpinImage::index::build(
         size_t fileEndIndex,
         bool appendToExistingIndex,
         std::experimental::filesystem::path statisticsFileDumpLocation) {
-    std::vector<std::experimental::filesystem::path> filesInDirectory = SpinImage::utilities::listDirectory(quicciImageDumpDirectory);
+    std::vector<std::experimental::filesystem::path> filesInDirectory = ShapeDescriptor::utilities::listDirectory(quicciImageDumpDirectory);
     std::cout << "Sizes: " << sizeof(NodeBlock) << ", " << sizeof(NodeBlockEntry) << std::endl;
     std::experimental::filesystem::path indexDirectory(indexDumpDirectory);
     omp_set_nested(1);
@@ -236,7 +236,7 @@ Index SpinImage::index::build(
         std::experimental::filesystem::path path = filesInDirectory.at(fileIndex);
         const std::string archivePath = path.string();
 
-        SpinImage::cpu::QUICCIImages images = SpinImage::read::QUICCImagesFromDumpFile(archivePath);
+        ShapeDescriptor::cpu::array<ShapeDescriptor::QUICCIDescriptor> images = SpinImage::read::QUICCImagesFromDumpFile(archivePath);
         double totalImageDurationMilliseconds = 0;
         #pragma omp critical
         {
@@ -244,19 +244,19 @@ Index SpinImage::index::build(
             std::chrono::steady_clock::time_point startTime = std::chrono::steady_clock::now();
 
             #pragma omp parallel for schedule(dynamic)
-            for (IndexImageID imageIndex = 0; imageIndex < images.imageCount; imageIndex++) {
+            for (IndexImageID imageIndex = 0; imageIndex < images.length; imageIndex++) {
                 if(imageIndex % 5000 == 0) {
                     std::stringstream progressBar;
                     progressBar << "\r[";
-                    int dashCount = int((float(imageIndex) / float(images.imageCount)) * 25.0f) + 1;
+                    int dashCount = int((float(imageIndex) / float(images.length)) * 25.0f) + 1;
                     for(int i = 0; i < 25; i++) {
                         progressBar << ((i <= dashCount) ? "=" : " ");
                     }
-                    progressBar << "] " << imageIndex << "/" << images.imageCount << "\r";
+                    progressBar << "] " << imageIndex << "/" << images.length << "\r";
                     std::cout << progressBar.str() << std::flush;
                 }
                 std::chrono::steady_clock::time_point imageStartTime = std::chrono::steady_clock::now();
-                QuiccImage combined = images.images[imageIndex];
+                ShapeDescriptor::QUICCIDescriptor combined = images.content[imageIndex];
                 IndexEntry entry = {fileIndex, imageIndex};
                 cache.insertImage(combined, entry);
                 std::chrono::steady_clock::time_point imageEndTime = std::chrono::steady_clock::now();
@@ -272,7 +272,7 @@ Index SpinImage::index::build(
             double durationMilliseconds =
                     std::chrono::duration_cast<std::chrono::nanoseconds>(endTime - startTime).count() / 1000000.0;
 
-            fileStatistics.push_back(gatherFileStatistics(&cache, fileIndex, totalImageDurationMilliseconds, durationMilliseconds, images.imageCount, archivePath));
+            fileStatistics.push_back(gatherFileStatistics(&cache, fileIndex, totalImageDurationMilliseconds, durationMilliseconds, images.length, archivePath));
 
             cache.statistics.reset();
             cache.nodeBlockStatistics.reset();
@@ -287,7 +287,7 @@ Index SpinImage::index::build(
                       << ", Cache (nodes: " << cache.getCurrentItemCount() << "/" << cache.itemCapacity
                       << ", images: " << cache.getCurrentImageCount() << "/" << cache.imageCapacity << ")"
                       << ", Duration: " << (durationMilliseconds / 1000.0) << "s"
-                      << ", Image count: " << images.imageCount << std::endl;
+                      << ", Image count: " << images.length << std::endl;
         };
 
         // Necessity to prevent libc from hogging all system memory
@@ -295,7 +295,7 @@ Index SpinImage::index::build(
             malloc_trim(0);
         }
 
-        delete[] images.images;
+        delete[] images.content;
     }
 
     // Ensuring all changes are written to disk

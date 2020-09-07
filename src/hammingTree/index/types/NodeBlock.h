@@ -1,7 +1,7 @@
 #pragma once
 
 #include <array>
-#include <hammingTree/cpu/types/BoolArray.h>
+#include <hammingTree/types/BoolArray.h>
 #include <hammingTree/index/types/IndexEntry.h>
 #include <mutex>
 #include "NodeBlockEntry.h"

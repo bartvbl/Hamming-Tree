@@ -1,6 +1,8 @@
 #pragma once
 
 #include <hammingTree/treeBuildSettings.h>
+#include <shapeDescriptor/libraryBuildSettings.h>
+#include <shapeDescriptor/common/types/methods/QUICCIDescriptor.h>
 #include <iostream>
 #include <array>
 #include <bitset>

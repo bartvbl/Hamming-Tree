@@ -1,7 +1,5 @@
 #include <arrrgh.hpp>
-#include <hammingTree/cpu/index/types/Index.h>
-#include <hammingTree/cpu/index/IndexIO.h>
-#include <hammingTree/cpu/index/IndexQueryer.h>
+#include <hammingTree/index/types/Index.h>
 #include <fstream>
 #include <shapeDescriptor/utilities/fileutils.h>
 

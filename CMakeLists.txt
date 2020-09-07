@@ -6,6 +6,16 @@ cmake_minimum_required(VERSION 3.0)
 
 add_subdirectory(../libShapeDescriptor ${CMAKE_CURRENT_BINARY_DIR}/libShapeDescriptor)
 
+find_package(OpenMP)
+
+if(OPENMP_FOUND)
+    message("OPENMP FOUND")
+    set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} ${OpenMP_C_FLAGS}")
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${OpenMP_CXX_FLAGS}")
+    set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} ${OpenMP_EXE_LINKER_FLAGS}")
+endif()
+
+
 include_directories (
         src/
         lib/glm/
@@ -40,7 +50,7 @@ file (GLOB_RECURSE QUICCI_DUMPER_TOOL_SOURCES  tools/quiccidumper/*.cpp)
 file (GLOB_RECURSE COMPRESSOR_TOOL_SOURCES     tools/compressor/*.cpp)
 
 add_library(${PROJECT_NAME} STATIC ${LIBRARY_SOURCES} ${LIBRARY_HEADERS} ${LIBRARY_KERNELS})
-target_link_libraries(${PROJECT_NAME} stdc++fs fast-lzma2)
+target_link_libraries(${PROJECT_NAME} ShapeDescriptor stdc++fs fast-lzma2)
 target_include_directories(${PROJECT_NAME} PUBLIC src/)
 
 add_executable(buildindex ${INDEX_BUILD_TOOL_SOURCES})

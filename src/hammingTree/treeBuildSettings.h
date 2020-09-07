@@ -1,4 +1,5 @@
 #pragma once
+#include <stddef.h>
 
 // Due to parsing order of header files, these must be at the top, before the remaining includes
 // They represent a tradeoff between the number of files/images the database is able to represent,

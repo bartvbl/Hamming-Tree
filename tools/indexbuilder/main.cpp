@@ -1,6 +1,6 @@
 #include <arrrgh.hpp>
-#include <hammingTree/cpu/index/types/Index.h>
-#include <hammingTree/cpu/index/IndexBuilder.h>
+#include <hammingTree/index/types/Index.h>
+#include <hammingTree/index/IndexBuilder.h>
 
 int main(int argc, const char** argv) {
     arrrgh::parser parser("indexbuilder", "Create indexes for QUICCI images.");

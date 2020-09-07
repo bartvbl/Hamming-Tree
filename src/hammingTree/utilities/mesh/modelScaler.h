@@ -4,6 +4,6 @@
 
 namespace SpinImage {
     namespace utilities {
-        SpinImage::cpu::Mesh fitMeshInsideSphereOfRadius(SpinImage::cpu::Mesh &input, float radius);
+        ShapeDescriptor::cpu::Mesh fitMeshInsideSphereOfRadius(ShapeDescriptor::cpu::Mesh &input, float radius);
     }
 }

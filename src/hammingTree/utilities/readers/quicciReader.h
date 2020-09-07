@@ -2,6 +2,8 @@
 
 #include <string>
 #include <experimental/filesystem>
+#include <shapeDescriptor/common/types/methods/QUICCIDescriptor.h>
+#include <shapeDescriptor/cpu/types/array.h>
 
 namespace SpinImage {
     namespace read {

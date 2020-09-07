@@ -1,16 +1,15 @@
 #include "IndexIO.h"
 #include <fstream>
 #include <cassert>
-#include <spinImage/utilities/fileutils.h>
+#include <shapeDescriptor/utilities/fileutils.h>
 #include <cstring>
 #include <iostream>
-#include <spinImage/cpu/types/QuiccImage.h>
 
 Index SpinImage::index::io::readIndex(std::experimental::filesystem::path indexDirectory) {
     std::experimental::filesystem::path indexFilePath = indexDirectory / "index.dat";
 
     size_t inputBufferSize = 0;
-    const char* inputBuffer = SpinImage::utilities::readCompressedFile(indexFilePath, &inputBufferSize, true);
+    const char* inputBuffer = ShapeDescriptor::utilities::readCompressedFile(indexFilePath, &inputBufferSize, true);
 
     std::vector<std::experimental::filesystem::path>* fileNames = new std::vector<std::experimental::filesystem::path>();
 
@@ -72,7 +71,7 @@ void SpinImage::index::io::writeIndex(const Index& index, std::experimental::fil
 
     assert((nextStringEntryPointer - outputFileBuffer - fileHeaderSize) == stringArraySize);
 
-    SpinImage::utilities::writeCompressedFile(outputFileBuffer, indexFileSize, indexFilePath);
+    ShapeDescriptor::utilities::writeCompressedFile(outputFileBuffer, indexFileSize, indexFilePath);
 
     delete[] outputFileBuffer;
 }
@@ -92,7 +91,7 @@ void SpinImage::index::io::writeIndex(const Index& index, std::experimental::fil
 const size_t headerSize = sizeof(unsigned int);
 const size_t leafNodeBoolArraySize = BoolArray<NODES_PER_BLOCK>::computeArrayLength() * sizeof(unsigned int);
 const size_t blockStructSize = leafNodeBoolArraySize;
-const size_t entrySize = (sizeof(IndexEntry) + sizeof(QuiccImage));
+const size_t entrySize = (sizeof(IndexEntry) + sizeof(ShapeDescriptor::QUICCIDescriptor));
 
 NodeBlock* SpinImage::index::io::readNodeBlock(const std::string &blockID, const std::experimental::filesystem::path &indexRootDirectory) {
     std::experimental::filesystem::path nodeBlockFilePath = indexRootDirectory / blockID / "block.dat";
@@ -103,7 +102,7 @@ NodeBlock* SpinImage::index::io::readNodeBlock(const std::string &blockID, const
 
     // Multithreading is disabled because the used multithreading context is not thread safe
     size_t fileSize;
-    const char* inputBuffer = SpinImage::utilities::readCompressedFile(nodeBlockFilePath, &fileSize, false);
+    const char* inputBuffer = ShapeDescriptor::utilities::readCompressedFile(nodeBlockFilePath, &fileSize, false);
 
     NodeBlock* nodeBlock = new NodeBlock();
     nodeBlock->identifier = blockID;
@@ -119,7 +118,7 @@ NodeBlock* SpinImage::index::io::readNodeBlock(const std::string &blockID, const
         for(int entry = 0; entry < entryCount; entry++) {
             entryList->emplace_back(
                 *reinterpret_cast<const IndexEntry*>(bufferPointer),
-                *reinterpret_cast<const QuiccImage*>(bufferPointer + sizeof(IndexEntry)));
+                *reinterpret_cast<const ShapeDescriptor::QUICCIDescriptor*>(bufferPointer + sizeof(IndexEntry)));
             bufferPointer += entrySize;
         }
     }
@@ -150,8 +149,8 @@ void SpinImage::index::io::writeNodeBlock(const NodeBlock *block, const std::exp
         for(const auto& entry : block->leafNodeContents.at(node)) {
             *reinterpret_cast<IndexEntry*>(bufferPointer) = entry.indexEntry;
             bufferPointer += sizeof(IndexEntry);
-            *reinterpret_cast<QuiccImage*>(bufferPointer) = entry.image;
-            bufferPointer += sizeof(QuiccImage);
+            *reinterpret_cast<ShapeDescriptor::QUICCIDescriptor*>(bufferPointer) = entry.image;
+            bufferPointer += sizeof(ShapeDescriptor::QUICCIDescriptor);
         }
     }
 
@@ -161,7 +160,7 @@ void SpinImage::index::io::writeNodeBlock(const NodeBlock *block, const std::exp
     std::experimental::filesystem::create_directories(nodeBlockFilePath.parent_path());
     assert(std::experimental::filesystem::exists(nodeBlockFilePath.parent_path()));
 
-    SpinImage::utilities::writeCompressedFile(outputBuffer, outputBufferSize, nodeBlockFilePath);
+    ShapeDescriptor::utilities::writeCompressedFile(outputBuffer, outputBufferSize, nodeBlockFilePath);
 
     delete[] outputBuffer;
 }

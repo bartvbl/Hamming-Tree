@@ -1,7 +1,7 @@
 #include <queue>
 #include "IndexQueryer.h"
 #include "NodeBlockCache.h"
-#include <spinImage/cpu/index/types/BitCountMipmapStack.h>
+#include <hammingTree/index/types/BitCountMipmapStack.h>
 #include <algorithm>
 #include <fstream>
 
@@ -26,11 +26,11 @@ struct UnvisitedNode {
 };
 
 struct SearchResultEntry {
-    SearchResultEntry(IndexEntry entry, const QuiccImage &imageEntry, std::string debug_nodeID, unsigned int minDistance)
+    SearchResultEntry(IndexEntry entry, const ShapeDescriptor::QUICCIDescriptor &imageEntry, std::string debug_nodeID, unsigned int minDistance)
         : reference(entry), image(imageEntry), debug_indexPath(debug_nodeID), distanceScore(minDistance) {}
 
     IndexEntry reference;
-    QuiccImage image;
+    ShapeDescriptor::QUICCIDescriptor image;
     std::string debug_indexPath;
     unsigned int distanceScore;
 
@@ -54,12 +54,12 @@ std::string appendPath(const std::string &parentNodeID, unsigned long childIndex
 
 }
 
-unsigned int computeHammingDistance(const QuiccImage &needle, const QuiccImage &haystack) {
+unsigned int computeHammingDistance(const ShapeDescriptor::QUICCIDescriptor &needle, const ShapeDescriptor::QUICCIDescriptor &haystack) {
 
     // Wherever pixels don't match, we apply a penalty for each of them
     unsigned int score = 0;
-    for(int i = 0; i < needle.size(); i++) {
-        score += std::bitset<32>(needle.at(i) ^ haystack.at(i)).count();
+    for(int i = 0; i < ShapeDescriptor::QUICCIDescriptorLength; i++) {
+        score += std::bitset<32>(needle.contents[i] ^ haystack.contents[i]).count();
     }
 
     return score;
@@ -79,7 +79,7 @@ void visitNode(
         std::priority_queue<UnvisitedNode> &closedNodeQueue,
         std::vector<SearchResultEntry> &currentSearchResults,
         const BitCountMipmapStack &queryImageMipmapStack,
-        const QuiccImage &queryImage) {
+        const ShapeDescriptor::QUICCIDescriptor &queryImage) {
     // Divide child nodes over both queues
     const unsigned int childLevel = level + 1;
     // If we have not yet acquired any search results, disable the threshold
@@ -119,7 +119,7 @@ void visitNode(
     }
 }
 
-std::vector<SpinImage::index::QueryResult> SpinImage::index::query(Index &index, const QuiccImage &queryImage, unsigned int resultCountLimit, debug::QueryRunInfo* runInfo) {
+std::vector<SpinImage::index::QueryResult> SpinImage::index::query(Index &index, const ShapeDescriptor::QUICCIDescriptor &queryImage, unsigned int resultCountLimit, debug::QueryRunInfo* runInfo) {
     std::chrono::steady_clock::time_point startTime = std::chrono::steady_clock::now();
 
     BitCountMipmapStack queryImageBitCountMipmapStack(queryImage);
