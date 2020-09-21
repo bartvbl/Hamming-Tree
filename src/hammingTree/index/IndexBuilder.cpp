@@ -1,6 +1,6 @@
 #include <shapeDescriptor/utilities/fileutils.h>
 #include <iostream>
-#include <hammingTree/utilities/readers/quicciReader.h>
+#include <shapeDescriptor/utilities/readers/QUICCIDescriptors.h>
 #include <bitset>
 #include <json.hpp>
 #include <fstream>
@@ -236,7 +236,7 @@ Index SpinImage::index::build(
         std::experimental::filesystem::path path = filesInDirectory.at(fileIndex);
         const std::string archivePath = path.string();
 
-        ShapeDescriptor::cpu::array<ShapeDescriptor::QUICCIDescriptor> images = SpinImage::read::QUICCImagesFromDumpFile(archivePath);
+        ShapeDescriptor::cpu::array<ShapeDescriptor::QUICCIDescriptor> images = ShapeDescriptor::read::QUICCIDescriptors(archivePath);
         double totalImageDurationMilliseconds = 0;
         #pragma omp critical
         {

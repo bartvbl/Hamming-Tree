@@ -3,8 +3,9 @@
 #include <hammingTree/index/IndexIO.h>
 #include <hammingTree/index/IndexQueryer.h>
 #include <lodepng.h>
-#include <shapeDescriptor/utilities/dumpers/descriptors.h>
+#include <shapeDescriptor/utilities/dumpers/QUICCIDescriptors.h>
 #include <hammingTree/index/types/BitCountMipmapStack.h>
+#include <shapeDescriptor/utilities/dumpers/descriptorImages.h>
 
 int main(int argc, const char** argv) {
     arrrgh::parser parser("queryindex", "Query an existing index of QUICCI images.");

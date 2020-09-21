@@ -1,6 +1,6 @@
 #include <omp.h>
 #include <shapeDescriptor/utilities/fileutils.h>
-#include <hammingTree/utilities/readers/quicciReader.h>
+#include <shapeDescriptor/utilities/readers/QUICCIDescriptors.h>
 #include <bitset>
 #include <set>
 #include <mutex>
@@ -78,7 +78,7 @@ std::vector<SpinImage::index::QueryResult> SpinImage::index::sequentialQuery(std
 
         // Reading image dump file
         std::experimental::filesystem::path archivePath = filesToIndex.at(fileIndex);
-        ShapeDescriptor::cpu::array<ShapeDescriptor::QUICCIDescriptor> images = SpinImage::read::QUICCImagesFromDumpFile(archivePath);
+        ShapeDescriptor::cpu::array<ShapeDescriptor::QUICCIDescriptor> images = ShapeDescriptor::read::QUICCIDescriptors(archivePath);
 
         #pragma omp critical
         {

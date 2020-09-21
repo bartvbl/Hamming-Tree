@@ -3,15 +3,16 @@
 #include <hammingTree/index/IndexIO.h>
 #include <hammingTree/index/IndexQueryer.h>
 #include <lodepng.h>
-#include <shapeDescriptor/utilities/dumpers/descriptors.h>
+#include <shapeDescriptor/utilities/dumpers/QUICCIDescriptors.h>
 #include <shapeDescriptor/utilities/fileutils.h>
 #include <random>
-#include <hammingTree/utilities/readers/quicciReader.h>
+#include <shapeDescriptor/utilities/readers/QUICCIDescriptors.h>
 #include <hammingTree/index/types/BitCountMipmapStack.h>
 #include <hammingTree/index/SequentialIndexQueryer.h>
 #include <json.hpp>
 #include <tsl/ordered_map.h>
 #include <fstream>
+#include <shapeDescriptor/utilities/dumpers/descriptorImages.h>
 
 template<class Key, class T, class Ignore, class Allocator,
         class Hash = std::hash<Key>, class KeyEqual = std::equal_to<Key>,
@@ -75,7 +76,7 @@ int main(int argc, const char** argv) {
     std::experimental::filesystem::path chosenQueryFilePath = queryFiles.at(chosenFileIndex);
     std::cout << "\tChose " << chosenQueryFilePath << " as file to select an image from." << std::endl;
 
-    ShapeDescriptor::cpu::array<ShapeDescriptor::QUICCIDescriptor> queryImages = SpinImage::read::QUICCImagesFromDumpFile(chosenQueryFilePath);
+    ShapeDescriptor::cpu::array<ShapeDescriptor::QUICCIDescriptor> queryImages = ShapeDescriptor::read::QUICCIDescriptors(chosenQueryFilePath);
     std::uniform_int_distribution<size_t> queryImageDistribution(0, queryImages.length);
     size_t chosenQueryImageIndex = queryImageDistribution(generator);
     ShapeDescriptor::QUICCIDescriptor chosenQueryImage = queryImages.content[chosenQueryImageIndex];
