@@ -48,7 +48,7 @@ int main(int argc, const char** argv) {
         ShapeDescriptor::utilities::writeCompressedFile(inputFileContents, inputFileSize, outputPath);
     } else if(decompress.value()) {
         size_t inputBufferSize = 0;
-        const char* inputFileContents = ShapeDescriptor::utilities::readCompressedFile(inputPath, &inputBufferSize, true);
+        const char* inputFileContents = ShapeDescriptor::utilities::readCompressedFile(inputPath, &inputBufferSize, 0);
         std::fstream outStream = std::fstream(outputFile, std::ios::out | std::ios::binary);
         outStream.write(inputFileContents, inputBufferSize);
         outStream.close();

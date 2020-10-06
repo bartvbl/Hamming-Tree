@@ -9,7 +9,7 @@ Index SpinImage::index::io::readIndex(std::experimental::filesystem::path indexD
     std::experimental::filesystem::path indexFilePath = indexDirectory / "index.dat";
 
     size_t inputBufferSize = 0;
-    const char* inputBuffer = ShapeDescriptor::utilities::readCompressedFile(indexFilePath, &inputBufferSize, true);
+    const char* inputBuffer = ShapeDescriptor::utilities::readCompressedFile(indexFilePath, &inputBufferSize, 0);
 
     std::vector<std::experimental::filesystem::path>* fileNames = new std::vector<std::experimental::filesystem::path>();
 
@@ -102,7 +102,7 @@ NodeBlock* SpinImage::index::io::readNodeBlock(const std::string &blockID, const
 
     // Multithreading is disabled because the used multithreading context is not thread safe
     size_t fileSize;
-    const char* inputBuffer = ShapeDescriptor::utilities::readCompressedFile(nodeBlockFilePath, &fileSize, false);
+    const char* inputBuffer = ShapeDescriptor::utilities::readCompressedFile(nodeBlockFilePath, &fileSize);
 
     NodeBlock* nodeBlock = new NodeBlock();
     nodeBlock->identifier = blockID;
