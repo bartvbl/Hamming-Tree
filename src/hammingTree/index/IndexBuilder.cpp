@@ -1,6 +1,6 @@
 #include <shapeDescriptor/utilities/fileutils.h>
 #include <iostream>
-#include <shapeDescriptor/utilities/readers/QUICCIDescriptors.h>
+#include <shapeDescriptor/utilities/read/QUICCIDescriptors.h>
 #include <bitset>
 #include <json.hpp>
 #include <fstream>

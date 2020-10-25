@@ -3,16 +3,16 @@
 #include <hammingTree/index/IndexIO.h>
 #include <hammingTree/index/IndexQueryer.h>
 #include <lodepng.h>
-#include <shapeDescriptor/utilities/dumpers/QUICCIDescriptors.h>
+#include <shapeDescriptor/utilities/dump/QUICCIDescriptors.h>
 #include <shapeDescriptor/utilities/fileutils.h>
 #include <random>
-#include <shapeDescriptor/utilities/readers/QUICCIDescriptors.h>
+#include <shapeDescriptor/utilities/read/QUICCIDescriptors.h>
 #include <hammingTree/index/types/BitCountMipmapStack.h>
 #include <hammingTree/index/SequentialIndexQueryer.h>
 #include <json.hpp>
 #include <tsl/ordered_map.h>
 #include <fstream>
-#include <shapeDescriptor/utilities/dumpers/descriptorImages.h>
+#include <shapeDescriptor/utilities/dump/descriptorImages.h>
 
 template<class Key, class T, class Ignore, class Allocator,
         class Hash = std::hash<Key>, class KeyEqual = std::equal_to<Key>,

@@ -1,6 +1,6 @@
 #include <omp.h>
 #include <shapeDescriptor/utilities/fileutils.h>
-#include <shapeDescriptor/utilities/readers/QUICCIDescriptors.h>
+#include <shapeDescriptor/utilities/read/QUICCIDescriptors.h>
 #include <bitset>
 #include <set>
 #include <mutex>
